@@ -163,6 +163,14 @@ public class CropIwaView extends FrameLayout {
         return imageConfig;
     }
 
+    public void rotateImage(float deltaAngle){
+        imageView.rotateImage(deltaAngle);
+    }
+
+    public float getMatrixAngle() {
+        return imageView.getMatrixAngle();
+    }
+
     public void setImageUri(Uri uri) {
         imageUri = uri;
         loadBitmapCommand = new LoadBitmapCommand(
@@ -184,7 +192,7 @@ public class CropIwaView extends FrameLayout {
         CropIwaShapeMask mask = overlayConfig.getCropShape().getMask();
         CropIwaBitmapManager.get().crop(
                 getContext(), cropArea, mask,
-                imageUri, saveConfig);
+                imageUri, saveConfig, imageView.getMatrixAngle());
     }
 
     @Override

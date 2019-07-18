@@ -2,6 +2,7 @@ package com.steelkiwi.cropiwa.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 
@@ -24,15 +25,17 @@ class CropImageTask extends AsyncTask<Void, Void, Throwable> {
     private CropIwaShapeMask mask;
     private Uri srcUri;
     private CropIwaSaveConfig saveConfig;
+    private float mCurrentAngle;
 
     public CropImageTask(
             Context context, CropArea cropArea, CropIwaShapeMask mask,
-            Uri srcUri, CropIwaSaveConfig saveConfig) {
+            Uri srcUri, CropIwaSaveConfig saveConfig, float mCurrentAngle) {
         this.context = context;
         this.cropArea = cropArea;
         this.mask = mask;
         this.srcUri = srcUri;
         this.saveConfig = saveConfig;
+        this.mCurrentAngle = mCurrentAngle;
     }
 
     @Override
@@ -44,6 +47,16 @@ class CropImageTask extends AsyncTask<Void, Void, Throwable> {
 
             if (bitmap == null) {
                 return new NullPointerException("Failed to load bitmap");
+            }
+            if (mCurrentAngle != 0) {
+                Matrix tempMatrix = new Matrix();
+                tempMatrix.setRotate(mCurrentAngle, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+                Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
+                        tempMatrix, true);
+                if (bitmap != rotatedBitmap) {
+                    bitmap.recycle();
+                }
+                bitmap = rotatedBitmap;
             }
 
             Bitmap cropped = cropArea.applyCropTo(bitmap);

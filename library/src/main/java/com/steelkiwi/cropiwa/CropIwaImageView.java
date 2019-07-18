@@ -7,6 +7,8 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.FloatRange;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
@@ -14,8 +16,8 @@ import android.widget.ImageView;
 import com.steelkiwi.cropiwa.config.ConfigChangeListener;
 import com.steelkiwi.cropiwa.config.CropIwaImageViewConfig;
 import com.steelkiwi.cropiwa.util.CropIwaUtils;
-import com.steelkiwi.cropiwa.util.MatrixUtils;
 import com.steelkiwi.cropiwa.util.MatrixAnimator;
+import com.steelkiwi.cropiwa.util.MatrixUtils;
 import com.steelkiwi.cropiwa.util.TensionInterpolator;
 
 /**
@@ -170,16 +172,10 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
         Matrix endMatrix = MatrixUtils.findTransformToAllowedBounds(
                 realImageBounds, imageMatrix,
                 allowedBounds);
-        MatrixAnimator animator = new MatrixAnimator();
-        animator.animate(imageMatrix, endMatrix, new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                imageMatrix.set((Matrix) animation.getAnimatedValue());
-                setImageMatrix(imageMatrix);
-                updateImageBounds();
-                invalidate();
-            }
-        });
+        imageMatrix.set(endMatrix);
+        setImageMatrix(imageMatrix);
+        updateImageBounds();
+        invalidate();
     }
 
     private void setScalePercent(@FloatRange(from = 0.01f, to = 1f) float percent) {
@@ -208,6 +204,16 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
         if (deltaX > 0.01f || deltaY > 0.01f) {
             updateImageBounds();
         }
+    }
+
+    public void rotateImage(float deltaAngle) {
+        imageMatrix.postRotate(deltaAngle, allowedBounds.centerX(), allowedBounds.centerY());
+        setImageMatrix(imageMatrix);
+        animateToAllowedBounds();
+    }
+
+    public float getMatrixAngle() {
+        return matrixUtils.getMatrixAngle(imageMatrix);
     }
 
     private void updateImageBounds() {
@@ -370,4 +376,11 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
         }
     }
 
+    private void printMatrix(@NonNull String logPrefix, @NonNull Matrix matrix) {
+        float x = matrixUtils.getXTranslation(matrix);
+        float y = matrixUtils.getYTranslation(matrix);
+        float rScale = matrixUtils.getScaleX(matrix);
+        float rAngle = matrixUtils.getMatrixAngle(matrix);
+        Log.d("LogTool", logPrefix + ": matrix: { x: " + x + ", y: " + y + ", scale: " + rScale + ", angle: " + rAngle + " }");
+    }
 }

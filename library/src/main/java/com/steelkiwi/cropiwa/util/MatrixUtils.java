@@ -2,6 +2,8 @@ package com.steelkiwi.cropiwa.util;
 
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 
 /**
  * Created by yarolegovich on 06.02.2017.
@@ -14,8 +16,8 @@ public class MatrixUtils {
     }
 
     public float getScaleX(Matrix mat) {
-        mat.getValues(outValues);
-        return outValues[Matrix.MSCALE_X];
+        return (float) Math.sqrt(Math.pow(getMatrixValue(mat, Matrix.MSCALE_X), 2)
+                + Math.pow(getMatrixValue(mat, Matrix.MSKEW_Y), 2));
     }
 
     public float getXTranslation(Matrix mat) {
@@ -26,6 +28,16 @@ public class MatrixUtils {
     public float getYTranslation(Matrix mat) {
         mat.getValues(outValues);
         return outValues[Matrix.MTRANS_Y];
+    }
+
+    public float getMatrixAngle(@NonNull Matrix matrix) {
+        return (float) -(Math.atan2(getMatrixValue(matrix, Matrix.MSKEW_X),
+                getMatrixValue(matrix, Matrix.MSCALE_X)) * (180 / Math.PI));
+    }
+
+    private float getMatrixValue(@NonNull Matrix matrix, @IntRange(from = 0, to = 9) int valueIndex) {
+        matrix.getValues(outValues);
+        return outValues[valueIndex];
     }
 
     public static Matrix findTransformToAllowedBounds(
