@@ -10,7 +10,7 @@ This is forked from [CropIwa](https://github.com/steelkiwi/cropiwa "cropiwa")
  I add rotate image function for this;
 
 ![GifSample1](https://github.com/pengbs/cropiwa/blob/master/assets/3J8gYWC.gif)
-![RotateSample1](https://github.com/pengbs/cropiwa/blob/master/assets/rotate_sample)
+![RotateSample1](https://github.com/pengbs/cropiwa/blob/master/assets/rotate_sample.png)
 
 ## Sample
 Please see the [sample app](sample/src/main/java/com/steelkiwi/cropiwa/sample) for library usage examples.
