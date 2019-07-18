@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.steelkiwi.cropiwa.AspectRatio;
 
 import com.steelkiwi.cropiwa.CropIwaView;
 import com.steelkiwi.cropiwa.sample.config.CropViewConfigurator;
@@ -59,6 +58,8 @@ public class CropActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.done) {
             cropView.crop(configurator.getSelectedSaveConfig());
             finish();
+        } else if (item.getItemId() == R.id.rotate) {
+            cropView.rotateImage(90);
         }
         return super.onOptionsItemSelected(item);
     }

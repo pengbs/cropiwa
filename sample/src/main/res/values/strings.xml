@@ -12,4 +12,5 @@
 
     <string name="transition_view_image" translatable="false">view_image</string>
     <string name="mi_done">Done</string>
+    <string name="mi_rotate">Rotate</string>
 </resources>
